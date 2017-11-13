@@ -1,0 +1,30 @@
+{
+  "name": "purescript-arraybuffer",
+  "version": "4.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jacereda/purescript-arraybuffer.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-functions": "^3.0.0",
+    "purescript-arraybuffer-types": "^2.0.0",
+    "purescript-maybe": "^3.0.0",
+    "purescript-eff": "^3.0.0",
+    "purescript-arrays": "^4.2.1",
+    "purescript-console": "^3.0.0",
+    "purescript-st": "^3.0.0",
+    "purescript-uint": "^0.5.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0",
+    "purescript-spec": "^2.0.0",
+    "purescript-spec-quickcheck": "^2.0.0"
+  }
+}
