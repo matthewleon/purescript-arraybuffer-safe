@@ -7,6 +7,7 @@ module Data.ArrayBuffer.Safe.TypedArray (
 , buffer
 , byteLength
 , byteOffset
+, length
 
 --
 --, toUnfoldable
@@ -19,7 +20,6 @@ module Data.ArrayBuffer.Safe.TypedArray (
 --, some
 --, many
 --, null
-, length
 --, cons
 --, (:)
 --, snoc
@@ -100,7 +100,7 @@ import Prelude hiding (eq, notEq)
 import Data.Array as A
 import Data.ArrayBuffer.Safe.TypedArray.Class (class IsArrayType, Constructor, constructor)
 import Data.ArrayBuffer.Safe.TypedArray.Raw as Raw
-import Data.ArrayBuffer.Types (ArrayBuffer, ArrayView, ByteOffset, Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array)
+import Data.ArrayBuffer.Types (ArrayBuffer, ArrayView, ByteOffset, ByteLength, Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array)
 import Data.Maybe (Maybe(..), fromJust)
 import Partial.Unsafe (unsafePartial)
 import Unsafe.Coerce (unsafeCoerce)
@@ -150,7 +150,7 @@ foreign import fromTypedArray :: forall t t'. ArrayView t -> ArrayView t'
 
 foreign import buffer :: forall t. ArrayView t -> ArrayBuffer
 
-foreign import byteLength :: forall t. ArrayView t -> Int
+foreign import byteLength :: forall t. ArrayView t -> ByteLength
 
 foreign import byteOffset :: forall t. ArrayView t -> Int
 
