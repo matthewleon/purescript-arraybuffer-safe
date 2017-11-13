@@ -24,7 +24,6 @@ module Data.ArrayBuffer.Safe.DataView.ST (
 , getFloat64le
 
 , setInt8
-{-
 , setInt16be
 , setInt16le
 , setInt32be
@@ -38,7 +37,6 @@ module Data.ArrayBuffer.Safe.DataView.ST (
 , setFloat32le
 , setFloat64be
 , setFloat64le
--}
 ) where
 
 import Prelude
@@ -124,6 +122,45 @@ getFloat64le = useImmutableGetter DV.getFloat64le
 
 setInt8 :: Setter Int
 setInt8 = setter "setInt8" false
+
+setInt16be :: Setter Int
+setInt16be = setter "setInt16" false
+
+setInt16le :: Setter Int
+setInt16le = setter "setInt16" true
+
+setInt32be :: Setter Int
+setInt32be = setter "setInt32" false
+
+setInt32le :: Setter Int
+setInt32le = setter "setInt32" true
+
+setUint8 :: Setter UInt
+setUint8 = setter "setUint8" false
+
+setUint16be :: Setter UInt
+setUint16be = setter "setUint16" false
+
+setUint16le :: Setter UInt
+setUint16le = setter "setUint16" true
+
+setUint32be :: Setter UInt
+setUint32be = setter "setUint32" false
+
+setUint32le :: Setter UInt
+setUint32le = setter "setUint32" true
+
+setFloat32be :: Setter Number
+setFloat32be = setter "setFloat32" false
+
+setFloat32le :: Setter Number
+setFloat32le = setter "setFloat32" true
+
+setFloat64be :: Setter Number
+setFloat64be = setter "setFloat64" false
+
+setFloat64le :: Setter Number
+setFloat64le = setter "setFloat64" true
 
 liftFromDV
   :: forall a
