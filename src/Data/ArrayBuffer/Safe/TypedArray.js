@@ -84,6 +84,20 @@ exports.filter = function(dictIsArrayType) {
   };
 };
 
+exports.slice = function(xs) {
+  return function(begin) {
+    return function(end) {
+      return xs.slice(begin, end);
+    };
+  };
+};
+
+exports.drop = function(xs) {
+  return function(length) {
+    return xs.slice(length);
+  };
+};
+
 exports.map = function(dictIsArrayType) {
   return function(callback) {
     return function(av) {

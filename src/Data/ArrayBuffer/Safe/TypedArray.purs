@@ -54,10 +54,10 @@ module Data.ArrayBuffer.Safe.TypedArray (
 --,sort
 --,sortBy
 --,sortWith
---,slice
---,take
+, slice
+, take
 --,takeWhile
---,drop
+, drop
 --,dropWhile
 --,span
 --,group
@@ -182,6 +182,13 @@ notEq xs ys = xs `eq` ys == false
 foreign import every :: forall t m. IsArrayType t m => (m -> Boolean) -> t -> Boolean
 
 foreign import filter :: forall t m. IsArrayType t m => (m -> Boolean) -> t -> t
+
+foreign import slice :: forall t. ArrayView t -> Int -> Int -> ArrayView t
+
+take :: forall t. ArrayView t -> Int -> ArrayView t
+take xs = slice xs 0
+
+foreign import drop :: forall t. ArrayView t -> Int -> ArrayView t
 
 foreign import map :: forall t m. IsArrayType t m => (m -> m) -> t -> t
 
