@@ -3,7 +3,10 @@ module Test.Data.ArrayBuffer.Safe.TypedArray where
 import Prelude
 
 import Data.Array as A
+import Data.ArrayBuffer.Safe.ArrayBuffer as AB
 import Data.ArrayBuffer.Safe.TypedArray as TA
+import Data.ArrayBuffer.Safe.TypedArray.Int8Array as I8A
+import Data.Maybe (Maybe, isNothing, maybe)
 import Data.Ord (abs)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (suchThat)
@@ -130,9 +133,30 @@ testTypedArray = describe "TypedArray" do
               length' = abs (length `mod` alen)
           in  TA.fromArray (A.drop length' xs) :: TA.Int32Array
               `TA.eq` TA.drop (TA.fromArray xs) length'
-
-  {- TODO
   describe "fromArrayBufferWithOffset" $ do
-    describe "Int32Array" do
-      it "correctly captures the desired part of the ArrayBuffer" do
-  -}
+    describe "Int8Array" do
+      it "correctly captures the desired part of the ArrayBuffer" $
+        quickCheck \xs byteOffset ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = abs $ byteOffset `mod` AB.byteLength ab
+              abSliced = TA.buffer $ TA.drop i8a byteOffset'
+              maybeOffsetInt8Array = TA.fromArrayBufferWithOffset ab byteOffset'
+              int8ArrayFromSlicedAB = I8A.fromArrayBuffer abSliced
+          in  maybe false (_ `TA.eq` int8ArrayFromSlicedAB) maybeOffsetInt8Array
+      it "returns Nothing with offset greater than ArrayBuffer length" $
+        quickCheck \xs byteOffset ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = AB.byteLength ab + abs byteOffset
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array = TA.fromArrayBufferWithOffset ab byteOffset'
+          in  isNothing maybeOffsetInt8Array
+      it "returns Nothing with negative offset" $
+        quickCheck \xs byteOffset ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = -1 - abs byteOffset
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array = TA.fromArrayBufferWithOffset ab byteOffset'
+          in  isNothing maybeOffsetInt8Array

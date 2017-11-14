@@ -13,7 +13,7 @@ exports.fromArrayBufferImpl = function (dictIsArrayType) {
     return function (nothing) {
       return function (ab) {
         try {
-          return just(new dictIsArrayType.constructor(ab, byteOffset));
+          return just(new dictIsArrayType.constructor(ab));
         }
         catch (e) {
           if (e instanceof RangeError) return nothing;
