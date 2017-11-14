@@ -7,15 +7,30 @@ var ctor = function (dictIsArrayType) {
 };
 
 exports.fromArray = ctor;
-exports.fromArrayBuffer = ctor;
+
+exports.fromArrayBufferImpl = function (dictIsArrayType) {
+  return function (just) {
+    return function (nothing) {
+      return function (ab) {
+        try {
+          return just(new dictIsArrayType.constructor(ab, byteOffset));
+        }
+        catch (e) {
+          if (e instanceof RangeError) return nothing;
+          else throw e;
+        }
+      };
+    };
+  };
+};
 
 exports.fromArrayBufferWithOffsetImpl = function (dictIsArrayType) {
   return function (just) {
     return function (nothing) {
-      return function (arr) {
+      return function (ab) {
         return function (byteOffset) {
           try {
-            return just(new dictIsArrayType.constructor(arr, byteOffset));
+            return just(new dictIsArrayType.constructor(ab, byteOffset));
           }
           catch (e) {
             if (e instanceof RangeError) return nothing;
@@ -30,11 +45,11 @@ exports.fromArrayBufferWithOffsetImpl = function (dictIsArrayType) {
 exports.fromArrayBufferWithOffsetAndLengthImpl = function (dictIsArrayType) {
   return function (just) {
     return function (nothing) {
-      return function (arr) {
+      return function (ab) {
         return function (byteOffset) {
           return function (length) {
             try {
-              return just(new dictIsArrayType.constructor(arr, byteOffset, length));
+              return just(new dictIsArrayType.constructor(ab, byteOffset, length));
             }
             catch (e) {
               if (e instanceof RangeError) return nothing;

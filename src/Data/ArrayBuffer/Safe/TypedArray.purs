@@ -107,7 +107,17 @@ import Unsafe.Coerce (unsafeCoerce)
 
 foreign import fromArray :: forall t m. IsArrayType t m => Array m -> t
 
-foreign import fromArrayBuffer :: forall t m. IsArrayType t m => ArrayBuffer -> t
+-- TODO: This returns t, rather than Maybe t, for 8-bit arrays
+fromArrayBuffer :: forall t m. IsArrayType t m => ArrayBuffer -> Maybe t
+fromArrayBuffer = fromArrayBufferImpl Just Nothing
+
+foreign import fromArrayBufferImpl
+  :: forall t m
+   . IsArrayType t m
+  => (forall r. r -> Maybe r)
+  -> (forall r. Maybe r)
+  -> ArrayBuffer
+  -> Maybe t
 
 fromArrayBufferWithOffset
   :: forall t m
