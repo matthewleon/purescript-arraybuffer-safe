@@ -173,3 +173,41 @@ testTypedArray = describe "TypedArray" do
                 TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
               int8ArrayFromSlicedAB = I8A.fromArrayBuffer abSliced
           in  maybe false (_ `TA.eq` int8ArrayFromSlicedAB) maybeOffsetInt8Array
+      it "returns Nothing with offset greater than ArrayBuffer length" $
+        quickCheck \xs byteOffset ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = AB.byteLength ab + abs byteOffset
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array =
+                TA.fromArrayBufferWithOffsetAndLength ab byteOffset' 0
+          in  isNothing maybeOffsetInt8Array
+      it "returns Nothing with negative offset" $
+        quickCheck \xs byteOffset ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = -1 - abs byteOffset
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array =
+                TA.fromArrayBufferWithOffsetAndLength ab byteOffset' 0
+          in  isNothing maybeOffsetInt8Array
+      it "returns Nothing with length overlapping ArrayBuffer length" $
+        quickCheck \xs byteOffset length ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = abs $ byteOffset `mod` AB.byteLength ab
+              length' = abs (AB.byteLength ab - byteOffset') + abs length
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array =
+                TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
+          in  isNothing maybeOffsetInt8Array
+      it "returns Nothing with negative length" $
+        quickCheck \xs byteOffset length ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = abs $ byteOffset `mod` AB.byteLength ab
+              length' = 1 - abs length
+              maybeOffsetInt8Array :: Maybe TA.Int8Array
+              maybeOffsetInt8Array =
+                TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
+          in  isNothing maybeOffsetInt8Array
