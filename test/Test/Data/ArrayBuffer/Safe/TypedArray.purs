@@ -160,3 +160,16 @@ testTypedArray = describe "TypedArray" do
               maybeOffsetInt8Array :: Maybe TA.Int8Array
               maybeOffsetInt8Array = TA.fromArrayBufferWithOffset ab byteOffset'
           in  isNothing maybeOffsetInt8Array
+  describe "fromArrayBufferWithOffsetAndLength" $ do
+    describe "Int8Array" do
+      it "correctly captures the desired part of the ArrayBuffer" $
+        quickCheck \xs byteOffset length ->
+          let i8a = TA.fromArray xs :: TA.Int8Array
+              ab = TA.buffer i8a
+              byteOffset' = abs $ byteOffset `mod` AB.byteLength ab
+              length' = abs (length `mod` (AB.byteLength ab - byteOffset'))
+              abSliced = TA.buffer $ TA.slice i8a byteOffset' (byteOffset' + length')
+              maybeOffsetInt8Array =
+                TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
+              int8ArrayFromSlicedAB = I8A.fromArrayBuffer abSliced
+          in  maybe false (_ `TA.eq` int8ArrayFromSlicedAB) maybeOffsetInt8Array
