@@ -23,5 +23,5 @@ exports.byteLength = function(dataView) {
 };
 
 exports.byteOffset = function(dataView) {
-  return dataView.byteLength;
+  return dataView.byteOffset;
 };
