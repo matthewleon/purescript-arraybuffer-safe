@@ -1,6 +1,8 @@
 module Data.ArrayBuffer.Safe.DataView (
   Getter
 , fromArrayBuffer
+, fromArrayBufferWithOffset
+, fromArrayBufferWithOffsetAndLength
 , buffer
 , byteLength
 , byteOffset
@@ -22,7 +24,7 @@ module Data.ArrayBuffer.Safe.DataView (
 ) where
 
 import Data.ArrayBuffer.Types (ArrayBuffer, ByteLength, ByteOffset, DataView)
-import Data.Function.Uncurried (Fn6, runFn6)
+import Data.Function.Uncurried (Fn4, Fn5, Fn6, runFn4, runFn5, runFn6)
 import Data.Maybe (Maybe(..))
 import Data.UInt (UInt)
 
@@ -31,6 +33,16 @@ type Getter r = DataView -> ByteOffset -> Maybe r
 
 -- | View mapping an `ArrayBuffer`.
 foreign import fromArrayBuffer :: ArrayBuffer -> DataView
+
+fromArrayBufferWithOffset :: ArrayBuffer -> ByteOffset -> Maybe DataView
+fromArrayBufferWithOffset = runFn4 fromArrayBufferWithOffsetImpl Just Nothing
+
+foreign import fromArrayBufferWithOffsetImpl :: Fn4 (DataView -> Maybe DataView) (Maybe DataView) ArrayBuffer ByteOffset (Maybe DataView)
+
+fromArrayBufferWithOffsetAndLength :: ArrayBuffer -> ByteOffset -> ByteLength -> Maybe DataView
+fromArrayBufferWithOffsetAndLength = runFn5 fromArrayBufferWithOffsetAndLengthImpl Just Nothing
+
+foreign import fromArrayBufferWithOffsetAndLengthImpl :: Fn5 (DataView -> Maybe DataView) (Maybe DataView) ArrayBuffer ByteOffset ByteLength (Maybe DataView)
 
 foreign import buffer :: DataView -> ArrayBuffer
 

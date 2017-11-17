@@ -5,7 +5,7 @@ import Prelude
 import Data.Array as A
 import Data.ArrayBuffer.Safe.DataView as DV
 import Data.ArrayBuffer.Safe.TypedArray as TA
-import Data.Maybe (Maybe(..), fromJust, isJust)
+import Data.Maybe (Maybe(..), fromJust, isJust, isNothing)
 import Data.Ord (abs)
 import Data.UInt as U
 import Global (isNaN)
@@ -17,6 +17,76 @@ import Test.Spec.QuickCheck (QCRunnerEffects, quickCheck)
 
 testDataView :: Spec (QCRunnerEffects ()) Unit
 testDataView = describe "DataView" do
+  describe "fromArrayBuffer" $ do
+    it "correctly creates a DataView from an ArrayBuffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) ->
+        let i8a = TA.fromArray xs :: TA.Int32Array
+            ab = TA.buffer i8a
+            dv = DV.fromArrayBuffer ab
+            bytesPerElement = 4
+        in  DV.byteLength dv == A.length xs * bytesPerElement
+            && DV.byteOffset dv == 0
+
+  describe "fromArrayBufferWithOffset" $ do
+    it "correctly creates a DataView from an ArrayBuffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = abs $ offset `mod` A.length xs
+            dv = DV.fromArrayBufferWithOffset ab offset'
+        in  (DV.byteLength <$> dv) == Just (A.length xs - offset')
+            && (DV.byteOffset <$> dv) == Just offset'
+    it "returns Nothing when the offset is past the end of the buffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = A.length xs + abs offset
+        in  isNothing $ DV.fromArrayBufferWithOffset ab offset'
+    it "returns Nothing when the offset is negative" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = -1 - (abs $ offset `mod` A.length xs)
+        in  isNothing $ DV.fromArrayBufferWithOffset ab offset'
+
+  describe "fromArrayBufferWithOffsetAndLength" $ do
+    it "correctly creates a DataView from an ArrayBuffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset length ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = abs $ offset `mod` A.length xs
+            length' = abs $ length `mod` (A.length xs - offset')
+            dv = DV.fromArrayBufferWithOffsetAndLength ab offset' length'
+        in  (DV.byteLength <$> dv) == Just length'
+            && (DV.byteOffset <$> dv) == Just offset'
+    it "returns Nothing when the offset is past the end of the buffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset length ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = A.length xs + abs offset
+            length' = abs length
+        in  isNothing $ DV.fromArrayBufferWithOffsetAndLength ab offset' length'
+    it "returns Nothing when the length is past the end of the buffer" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset length ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = abs $ offset `mod` A.length xs
+            length' = 1 + (A.length xs - offset') + abs length
+        in  isNothing $ DV.fromArrayBufferWithOffsetAndLength ab offset' length'
+    it "returns Nothing when the offset is negative" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset length ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = -1 - (abs $ offset `mod` A.length xs)
+        in  isNothing $ DV.fromArrayBufferWithOffsetAndLength ab offset' length
+    it "returns Nothing when the length is negative" $ do
+      quickCheck \(NonEmptyUntypedInt8Array xs) offset length ->
+        let i8a = TA.fromArray xs :: TA.Int8Array
+            ab = TA.buffer i8a
+            offset' = abs $ offset `mod` A.length xs
+            length' = -1 - abs length
+        in  isNothing $ DV.fromArrayBufferWithOffsetAndLength ab offset' length'
+
   describe "getInt8" $ do
     it "correctly gets 8-bit integers" $
       quickCheck \(NonEmptyUntypedInt8Array xs) ->
