@@ -1,5 +1,23 @@
 "use strict";
 
+exports.newSTTypedArrayImpl = function(just) {
+  return function (nothing) {
+    return function (constructor) {
+      return function (length) {
+        return function () {
+          try {
+            return just(new constructor(length));
+          }
+          catch (e) {
+            if (e instanceof RangeError) return nothing;
+            else throw e;
+          }
+        };
+      };
+    };
+  };
+};
+
 exports.peekSTTypedArrayImpl = function(dictIsArrayType) {
   return function (just) {
     return function (nothing) {

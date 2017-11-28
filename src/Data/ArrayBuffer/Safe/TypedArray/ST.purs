@@ -9,13 +9,28 @@ module Data.ArrayBuffer.Safe.TypedArray.ST (
 
 import Control.Monad.Eff (Eff)
 import Control.Monad.ST (ST)
-import Data.ArrayBuffer.Safe.TypedArray (class IsArrayType)
+import Data.ArrayBuffer.Safe.TypedArray.Class (class IsArrayType, Constructor, constructor)
 import Data.ArrayBuffer.Types (ArrayView)
 import Data.Maybe (Maybe(..))
 import Prelude (pure, (<<<))
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data STTypedArray :: Type -> Type -> Type
+
+newSTTypedArray
+  :: forall t m h r
+   . IsArrayType t m
+  => Int
+  -> Eff (st :: ST h | r) (Maybe (STTypedArray t h))
+newSTTypedArray = newSTTypedArrayImpl Just Nothing constructor
+
+foreign import newSTTypedArrayImpl
+  :: forall t h r
+   . (STTypedArray t h -> Maybe (STTypedArray t h)) 
+  -> Maybe (STTypedArray t h)
+  -> Constructor t
+  -> Int
+  -> Eff (st :: ST h | r) (Maybe (STTypedArray t h))
 
 -- | Read the value at the specified index in a mutable array.
 peekSTTypedArray
