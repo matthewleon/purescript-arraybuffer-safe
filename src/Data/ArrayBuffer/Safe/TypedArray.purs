@@ -1,5 +1,6 @@
 module Data.ArrayBuffer.Safe.TypedArray (
-  fromArray
+  newTypedArray
+, fromArray
 , fromArrayBuffer
 , fromArrayBufferWithOffset
 , fromArrayBufferWithOffsetAndLength
@@ -104,6 +105,21 @@ import Data.ArrayBuffer.Types (ArrayBuffer, ArrayView, ByteOffset, ByteLength, I
 import Data.Maybe (Maybe(..), fromJust)
 import Partial.Unsafe (unsafePartial)
 import Unsafe.Coerce (unsafeCoerce)
+
+newTypedArray
+  :: forall t m
+   . IsArrayType t m
+  => Int
+  -> Maybe t
+newTypedArray = newTypedArrayImpl Just Nothing constructor
+
+foreign import newTypedArrayImpl
+  :: forall t
+   . (t -> Maybe t)
+  -> Maybe t
+  -> Constructor t
+  -> Int
+  -> Maybe t
 
 foreign import fromArray :: forall t m. IsArrayType t m => Array m -> t
 

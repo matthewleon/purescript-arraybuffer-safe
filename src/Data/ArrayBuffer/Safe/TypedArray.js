@@ -1,5 +1,21 @@
 "use strict";
 
+exports.newTypedArrayImpl = function(just) {
+  return function (nothing) {
+    return function (constructor) {
+      return function (length) {
+        try {
+          return just(new constructor(length));
+        }
+        catch (e) {
+          if (e instanceof RangeError) return nothing;
+          else throw e;
+        }
+      };
+    };
+  };
+};
+
 var ctor = function (dictIsArrayType) {
   return function (arr) {
     return new dictIsArrayType.constructor(arr);
