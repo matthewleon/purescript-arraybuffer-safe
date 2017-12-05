@@ -4,6 +4,9 @@ module Data.ArrayBuffer.Safe.TypedArray.ST (
 , thaw
 , peek
 , poke
+, fill
+, fillFrom
+, fillFromTo
 , unsafeFreeze
 , freeze
 ) where
@@ -59,6 +62,33 @@ foreign import poke
   -> Int
   -> m
   -> Eff (st :: ST h | r) Boolean
+
+-- Fill a TypedArray with a value
+--
+-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+foreign import fill
+  :: forall t m h r
+   . IsArrayType (ArrayView t) m
+  => STTypedArray h (ArrayView t)
+  -> m
+  -> Eff (st :: ST h | r) (STTypedArray h (ArrayView t))
+
+foreign import fillFrom
+  :: forall t m h r
+   . IsArrayType (ArrayView t) m
+  => STTypedArray h (ArrayView t)
+  -> Int
+  -> m
+  -> Eff (st :: ST h | r) (STTypedArray h (ArrayView t))
+
+foreign import fillFromTo
+  :: forall t m h r
+   . IsArrayType (ArrayView t) m
+  => STTypedArray h (ArrayView t)
+  -> Int
+  -> Int
+  -> m
+  -> Eff (st :: ST h | r) (STTypedArray h (ArrayView t))
 
 -- | O(1). Convert a mutable array to an immutable array, without copying. The mutable
 -- | array must not be mutated afterwards.

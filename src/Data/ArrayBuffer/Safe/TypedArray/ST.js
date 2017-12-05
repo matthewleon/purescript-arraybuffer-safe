@@ -46,6 +46,48 @@ exports.poke = function (dictIsArrayType) {
   };
 };
 
+exports.fill = function (dictIsArrayType) {
+  return function(xs) {
+    return function(value) {
+      return function() {
+        return xs.fill
+          ? xs.fill(value)
+          : Array.prototype.fill(xs, value);
+      };
+    };
+  };
+};
+
+exports.fillFrom = function (dictIsArrayType) {
+  return function(xs) {
+    return function(value) {
+      return function(start) {
+        return function() {
+          return xs.fill
+            ? xs.fill(value, start)
+            : Array.prototype.fill(xs, value, start);
+        };
+      };
+    };
+  };
+};
+
+exports.fillFromTo = function (dictIsArrayType) {
+  return function(xs) {
+    return function(value) {
+      return function(start) {
+        return function(to) {
+          return function() {
+            return xs.fill
+              ? xs.fill(value, start, end)
+              : Array.prototype.fill(xs, value, start, end);
+          };
+        };
+      };
+    };
+  };
+};
+
 exports.copyImpl = function (xs) {
   return function () {
     return xs.slice();
