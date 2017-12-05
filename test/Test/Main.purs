@@ -7,6 +7,7 @@ import Test.Data.ArrayBuffer.Safe.ArrayBuffer (testArrayBuffer)
 import Test.Data.ArrayBuffer.Safe.DataView (testDataView)
 import Test.Data.ArrayBuffer.Safe.DataView.ST (testSTDataView)
 import Test.Data.ArrayBuffer.Safe.TypedArray (testTypedArray)
+import Test.Data.ArrayBuffer.Safe.TypedArray.ST (testSTTypedArray)
 import Test.Spec.QuickCheck (QCRunnerEffects)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (run)
@@ -17,3 +18,4 @@ main = run [consoleReporter] do
   testDataView
   testSTDataView
   testTypedArray
+  testSTTypedArray

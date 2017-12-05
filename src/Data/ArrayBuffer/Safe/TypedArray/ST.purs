@@ -1,5 +1,6 @@
 module Data.ArrayBuffer.Safe.TypedArray.ST (
   STTypedArray
+, newSTTypedArray
 , thaw
 , peek
 , poke
@@ -21,16 +22,16 @@ newSTTypedArray
   :: forall t m h r
    . IsArrayType t m
   => Int
-  -> Eff (st :: ST h | r) (Maybe (STTypedArray t h))
+  -> Eff (st :: ST h | r) (Maybe (STTypedArray h t))
 newSTTypedArray = newSTTypedArrayImpl Just Nothing constructor
 
 foreign import newSTTypedArrayImpl
   :: forall t h r
-   . (STTypedArray t h -> Maybe (STTypedArray t h)) 
+   . (STTypedArray h t -> Maybe (STTypedArray h t)) 
   -> Maybe (STTypedArray t h)
   -> Constructor t
   -> Int
-  -> Eff (st :: ST h | r) (Maybe (STTypedArray t h))
+  -> Eff (st :: ST h | r) (Maybe (STTypedArray h t))
 
 -- | Read the value at the specified index in a mutable array.
 peek
