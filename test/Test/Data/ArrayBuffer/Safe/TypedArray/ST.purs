@@ -5,7 +5,7 @@ import Prelude hiding (eq)
 import Control.Monad.ST (pureST)
 import Data.ArrayBuffer.Safe.TypedArray (Int8Array, eq, newTypedArray)
 import Data.ArrayBuffer.Safe.TypedArray.ST (newSTTypedArray, unsafeFreeze)
-import Data.Maybe (fromJust)
+import Data.Maybe (Maybe, fromJust, isNothing)
 import Data.Ord (abs)
 import Data.Traversable (traverse)
 import Partial.Unsafe (unsafePartial)
@@ -22,3 +22,9 @@ testSTTypedArray = describe "newSTTypedArray" $ do
              $ pureST (traverse unsafeFreeze =<< newSTTypedArray posSz)
             )
             `eq` (unsafePartial $ fromJust $ newTypedArray posSz) :: Int8Array
+    it "returns Nothing on attempts to make negatively sized arrays" $
+      quickCheck \sz ->
+        let posSz = - (abs sz)
+        in  isNothing
+              ((pureST (traverse unsafeFreeze =<< newSTTypedArray posSz))
+                :: Maybe Int8Array)
