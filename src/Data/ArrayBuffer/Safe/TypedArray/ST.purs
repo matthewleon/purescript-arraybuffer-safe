@@ -1,8 +1,8 @@
 module Data.ArrayBuffer.Safe.TypedArray.ST (
   STTypedArray
 , thaw
-, peekSTTypedArray
-, pokeSTTypedArray
+, peek
+, poke
 , unsafeFreeze
 , freeze
 ) where
@@ -33,15 +33,15 @@ foreign import newSTTypedArrayImpl
   -> Eff (st :: ST h | r) (Maybe (STTypedArray t h))
 
 -- | Read the value at the specified index in a mutable array.
-peekSTTypedArray
+peek
   :: forall t m h r
    . IsArrayType (ArrayView t) m
   => STTypedArray h (ArrayView t)
   -> Int
   -> Eff (st :: ST h | r) (Maybe m)
-peekSTTypedArray = peekSTTypedArrayImpl Just Nothing
+peek = peekImpl Just Nothing
 
-foreign import peekSTTypedArrayImpl
+foreign import peekImpl
   :: forall t m h e r
    . IsArrayType (ArrayView t) m
   => (m -> r)
@@ -51,7 +51,7 @@ foreign import peekSTTypedArrayImpl
   -> (Eff (st :: ST h | e) r)
 
 -- | Change the value at the specified index in a mutable array.
-foreign import pokeSTTypedArray
+foreign import poke
   :: forall t m h r
    . IsArrayType (ArrayView t) m
   => STTypedArray h (ArrayView t)

@@ -18,7 +18,7 @@ exports.newSTTypedArrayImpl = function(just) {
   };
 };
 
-exports.peekSTTypedArrayImpl = function(dictIsArrayType) {
+exports.peekImpl = function(dictIsArrayType) {
   return function (just) {
     return function (nothing) {
       return function (xs) {
@@ -32,7 +32,7 @@ exports.peekSTTypedArrayImpl = function(dictIsArrayType) {
   };
 };
 
-exports.pokeSTTypedArray = function (dictIsArrayType) {
+exports.poke = function (dictIsArrayType) {
   return function (xs) {
     return function (i) {
       return function (a) {
