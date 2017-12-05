@@ -95,6 +95,12 @@ exports.length = function (av) {
   return av.length;
 };
 
+exports.toArray = function(dictIsArrayType) {
+  return function (ta) {
+    return Array.prototype.slice.call(ta);
+  };
+};
+
 exports.empty = function(dictIsArrayType) {
   return new dictIsArrayType.constructor();
 };

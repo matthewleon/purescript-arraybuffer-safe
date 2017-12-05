@@ -11,6 +11,7 @@ module Data.ArrayBuffer.Safe.TypedArray (
 , length
 
 --
+, toArray
 --, toUnfoldable
 --, fromFoldable
 , empty
@@ -181,6 +182,8 @@ foreign import byteLength :: forall t. ArrayView t -> ByteLength
 foreign import byteOffset :: forall t. ArrayView t -> Int
 
 foreign import length :: forall t. ArrayView t -> Int
+
+foreign import toArray :: forall t m. IsArrayType t m => t -> Array m
 
 -- | Create an empty typed array.
 foreign import empty :: forall t m. IsArrayType t m => t

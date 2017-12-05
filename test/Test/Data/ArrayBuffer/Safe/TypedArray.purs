@@ -211,3 +211,9 @@ testTypedArray = describe "TypedArray" do
               maybeOffsetInt8Array =
                 TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
           in  isNothing maybeOffsetInt8Array
+  describe "toArray" $ do
+    describe "Int32Array" do
+      it "converts a TypedArray to an Array" $
+        quickCheck \xs ->
+          let i32a = TA.fromArray xs :: TA.Int32Array
+          in  xs == TA.toArray i32a
