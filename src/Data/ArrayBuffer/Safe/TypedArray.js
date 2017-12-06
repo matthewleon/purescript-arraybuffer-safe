@@ -120,7 +120,7 @@ exports.generateImpl = function(just) {
           for (var i = 0; i < length; i++) {
             ta[i] = f(i);
           }
-          return ta;
+          return just(ta);
         };
       };
     };

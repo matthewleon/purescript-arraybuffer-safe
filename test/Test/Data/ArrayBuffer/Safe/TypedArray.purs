@@ -6,7 +6,7 @@ import Data.Array as A
 import Data.ArrayBuffer.Safe.ArrayBuffer as AB
 import Data.ArrayBuffer.Safe.TypedArray as TA
 import Data.ArrayBuffer.Safe.TypedArray.Int8Array as I8A
-import Data.Maybe (Maybe, isNothing, maybe)
+import Data.Maybe (Maybe(..), isNothing, maybe)
 import Data.Ord (abs)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (suchThat)
@@ -219,8 +219,12 @@ testTypedArray = describe "TypedArray" do
           in  xs == TA.toArray i32a
   describe "generate" $ do
     describe "Int32Array" $ do
-      it "constructs TypedArray correctly" $ do
+      it "constructs TypedArray correctly" $
         quickCheck \len increment ->
-          let len' = abs len
-          in  TA.generate len' (add increment)
-              == A.range increment increment + len'
+          let len' = 1 + abs len `mod` 1000
+              increment' = abs increment
+              ta :: Maybe TA.Int32Array
+              ta = TA.generate len' (_ + increment')
+              fromTA = TA.toArray <$> ta
+              arr    = Just (A.range increment' $ increment' + len' - 1)
+          in fromTA == arr
