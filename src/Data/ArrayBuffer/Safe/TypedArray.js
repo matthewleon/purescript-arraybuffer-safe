@@ -105,6 +105,28 @@ exports.empty = function(dictIsArrayType) {
   return new dictIsArrayType.constructor();
 };
 
+exports.generateImpl = function(just) {
+  return function (nothing) {
+    return function (constructor) {
+      return function (length) {
+        return function (f) {
+          try {
+            var ta = new constructor(length);
+          }
+          catch (e) {
+            if (e instanceof RangeError) return nothing;
+            else throw e;
+          }
+          for (var i = 0; i < length; i++) {
+            ta[i] = f(i);
+          }
+          return ta;
+        };
+      };
+    };
+  };
+};
+
 exports.every = function(dictIsArrayType) {
   return function(callback) {
     return function(av) {

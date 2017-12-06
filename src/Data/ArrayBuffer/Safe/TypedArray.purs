@@ -16,6 +16,7 @@ module Data.ArrayBuffer.Safe.TypedArray (
 --, fromFoldable
 , empty
 , singleton
+, generate
 --, range
 --, replicate
 --, (..)
@@ -185,12 +186,25 @@ foreign import length :: forall t. ArrayView t -> Int
 
 foreign import toArray :: forall t m. IsArrayType t m => t -> Array m
 
--- | Create an empty typed array.
+-- | Create an empty TypedArray
 foreign import empty :: forall t m. IsArrayType t m => t
 
--- | Create a typed array of one element
+-- | Create a TypedArray of one element
 singleton :: forall t m. IsArrayType t m => m -> t
 singleton = fromArray <<< A.singleton
+
+-- | Construct a TypedArray of the given length applying the function to indices
+generate :: forall t m. IsArrayType t m => Int -> (Int -> m) -> Maybe t
+generate = generateImpl Just Nothing constructor
+
+foreign import generateImpl
+  :: forall t m
+   . (t -> Maybe t)
+  -> Maybe t
+  -> Constructor t
+  -> Int
+  -> (Int -> m)
+  -> Maybe t
 
 index :: forall t m. IsArrayType t m => t -> Int -> Maybe m
 index = A.index <<< unsafeCoerce

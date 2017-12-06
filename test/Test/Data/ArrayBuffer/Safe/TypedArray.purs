@@ -217,3 +217,10 @@ testTypedArray = describe "TypedArray" do
         quickCheck \xs ->
           let i32a = TA.fromArray xs :: TA.Int32Array
           in  xs == TA.toArray i32a
+  describe "generate" $ do
+    describe "Int32Array" $ do
+      it "constructs TypedArray correctly" $ do
+        quickCheck \len increment ->
+          let len' = abs len
+          in  TA.generate len' (add increment)
+              == A.range increment increment + len'
