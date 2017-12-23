@@ -8,6 +8,7 @@ module Data.ArrayBuffer.Safe.TypedArray (
 , buffer
 , byteLength
 , byteOffset
+, bytesPerElement
 , length
 
 --
@@ -92,7 +93,6 @@ module Data.ArrayBuffer.Safe.TypedArray (
 , every
 , map
 , foldl
---, bytesPerElement
 
 , module Data.ArrayBuffer.Types
 , module Data.ArrayBuffer.Safe.TypedArray.Class
@@ -181,6 +181,11 @@ foreign import buffer :: forall t. ArrayView t -> ArrayBuffer
 foreign import byteLength :: forall t. ArrayView t -> ByteLength
 
 foreign import byteOffset :: forall t. ArrayView t -> Int
+
+bytesPerElement :: forall t m. IsArrayType (ArrayView t) m => ArrayView t -> Int
+bytesPerElement _ = bytesPerElementImpl (constructor :: Constructor (ArrayView t))
+
+foreign import bytesPerElementImpl :: forall t. Constructor t -> Int
 
 foreign import length :: forall t. ArrayView t -> Int
 

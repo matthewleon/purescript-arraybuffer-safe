@@ -91,6 +91,10 @@ exports.byteOffset = function (av) {
   return av.byteOffset;
 };
 
+exports.bytesPerElementImpl = function (c) {
+  return c.BYTES_PER_ELEMENT;
+};
+
 exports.length = function (av) {
   return av.length;
 };

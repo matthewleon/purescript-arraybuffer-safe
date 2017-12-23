@@ -10,7 +10,7 @@ import Data.UInt (UInt)
 class IsArrayType t m | t -> m where
   constructor :: Constructor t
 
-data Constructor t
+foreign import data Constructor :: Type -> Type
 
 instance arrayTypeInt8Array :: IsArrayType (ArrayView Int8) Int
   where constructor = int8ArrayConstructor

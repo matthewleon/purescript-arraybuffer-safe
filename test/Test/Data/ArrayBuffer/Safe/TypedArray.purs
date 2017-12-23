@@ -11,6 +11,7 @@ import Data.Ord (abs)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (suchThat)
 import Test.Spec (Spec, describe, it)
+import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.QuickCheck (QCRunnerEffects, quickCheck)
 
 testTypedArray :: Spec (QCRunnerEffects ()) Unit
@@ -211,6 +212,31 @@ testTypedArray = describe "TypedArray" do
               maybeOffsetInt8Array =
                 TA.fromArrayBufferWithOffsetAndLength ab byteOffset' length'
           in  isNothing maybeOffsetInt8Array
+  describe "bytesPerElement" $ do
+    describe "Int8Array" $
+      it "has 1 byte per element" $
+        TA.bytesPerElement (TA.empty :: TA.Int8Array) `shouldEqual` 1
+    describe "Uint8Array" $
+      it "has 1 byte per element" $
+        TA.bytesPerElement (TA.empty :: TA.Uint8Array) `shouldEqual` 1
+    describe "Int16Array" $
+      it "has 2 byte per element" $
+        TA.bytesPerElement (TA.empty :: TA.Int16Array) `shouldEqual` 2
+    describe "Uint16Array" $
+      it "has 2 bytes per element" $
+        TA.bytesPerElement (TA.empty :: TA.Uint16Array) `shouldEqual` 2
+    describe "Int32Array" $
+      it "has 4 bytes per element" $
+        TA.bytesPerElement (TA.empty :: TA.Int32Array) `shouldEqual` 4
+    describe "Uint32Array" $
+      it "has 4 bytes per element" $
+        TA.bytesPerElement (TA.empty :: TA.Uint32Array) `shouldEqual` 4
+    describe "Float32Array" $
+      it "has 4 bytes per element" $
+        TA.bytesPerElement (TA.empty :: TA.Float32Array) `shouldEqual` 4
+    describe "Float64Array" $
+      it "has 8 bytes per element" $
+        TA.bytesPerElement (TA.empty :: TA.Float64Array) `shouldEqual` 8
   describe "toArray" $ do
     describe "Int32Array" do
       it "converts a TypedArray to an Array" $
